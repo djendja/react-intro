@@ -1,72 +1,61 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { getJokes } from "../../api/Api";
 
 export const JokeComponent = () => {
-    const [joke, setJoke] = useState('');
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [getJoke, setGetJoke] = useState(false);
+  const [joke, setJoke] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    const getJokes = async (url, signal) => {
-        try {
-            const response = await fetch(url, signal);
-            const data = await response.json();
-            return data;
-        }
-        catch(error) {
-            console.log("Error fetching joke:", error);
-            setError("Error fetching");
-        }     
+  useEffect(() => {
+    const loadJokes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getJokes();        
+        setJoke(data);
+        setLoading(false);
+      } catch (error) {
+        console.log("Error", error);
+        setError("error");
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJokes();
+  }, []);
+
+  const handleClick = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getJokes();
+      setJoke(data);      
+      setLoading(false);
+    } catch (error) {
+      console.log("Error", error);
+      setError("error");
+      throw error;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
-        if(!getJoke) return; 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-        const controller = new AbortController();
+  if (error) {
+    return <div>{error}</div>;
+  }
 
-        const signal = {signal: controller.signal};
-
-        async function loadJoke() {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const data = await getJokes('https://official-joke-api.appspot.com/random_joke', signal);
-                console.log(data);
-                
-                setJoke(data);
-                setGetJoke(false);
-                setLoading(false);
-            }
-            catch(error) {
-                if(error.name === 'AbortError') {
-                    console.log("Fetch aborted");
-                    return;
-                }
-                console.log('error', error);
-                setError('Error fetching');
-            }
-        }
-
-        loadJoke();
-
-        return () => controller.abort();
-    },[getJoke])
-
-    const handleClick = () => {
-       setGetJoke(true);
-    }
-
-    if (loading) {
-        return <div>Loading...</div>
-    }
-
-    if(error) {
-        return <div>{error}</div>
-    }
-
-    return <div>
+  return (
+    <div>
         <p>{joke?.setup}</p>
         <p>{joke?.punchline}</p>
-        <button onClick={handleClick}>Get new joke</button>
+      <button onClick={handleClick}>Get new joke</button>
     </div>
-}
+  );
+};
