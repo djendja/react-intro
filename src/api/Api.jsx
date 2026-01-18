@@ -119,6 +119,10 @@ export const deletePost = async (id) => {
     return await deleteRequest(`${url}/posts/${id}`)
 }
 
-export const putPost = async(id, payload) => {
+export const putPost = async (id, payload) => {
     return await put(`${url}/posts/${id}`, payload)
+}
+
+export const loginUser = async () => {
+    return await get(`${url}/users`);
 }

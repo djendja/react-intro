@@ -1,14 +1,18 @@
 import './App.css'
 import { Accordion } from './components/Accordion/Accordion'
 import CardList from './components/CardList/CardList'
+import { LoginForm } from './components/LoginForm/LoginForm'
+import { useAppContext } from './hooks/useAppContext'
 
 function App() {
+  const {user} = useAppContext();
 
   return (
     <>
       {/* <JokeComponent /> */}
-      <Accordion />
-      <CardList />
+      {/* <Accordion /> */}
+      {!user && <LoginForm />}
+      {user && <CardList />}
     </>
   )
 }

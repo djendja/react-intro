@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { deletePost, putPost } from "../../../api/Api";
+import Button from '@mui/material/Button';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import './card.scss';
 
 export const Card = ({ title, views, id, setPosts, posts }) => {
-  const [editedTitle, setEditedTitle] = useState(title);
-  const [editedViews, setEditedViews] = useState(views);
+  // const [editedTitle, setEditedTitle] = useState(title);
+  // const [editedViews, setEditedViews] = useState(views);
   const [edit, setEdit] = useState(false);
   const editedTitleRef = useRef(null);
 
@@ -20,6 +23,11 @@ export const Card = ({ title, views, id, setPosts, posts }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+    const editedTitle = formData.get('title');
+    const editedViews = formData.get('views');
+    
     const payload = {title: editedTitle, views: Number(editedViews)};
 
     try {
@@ -55,15 +63,13 @@ export const Card = ({ title, views, id, setPosts, posts }) => {
           <input
             type="text"
             name="title"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.currentTarget.value)}
+            defaultValue={title}
             ref={editedTitleRef}
           />
           <input
             type="number"
             name="views"
-            value={editedViews}
-            onChange={(e) => setEditedViews(e.currentTarget.value)}
+            defaultValue={views}
           />
           <button type="submit">Apply</button>
         </form>
@@ -71,8 +77,10 @@ export const Card = ({ title, views, id, setPosts, posts }) => {
         <>
           <h2>{title}</h2>
           <p>Views: {views}</p>
-          <button onClick={handleClickEdit}>Edit</button>
-          <button onClick={() => handleDelete(id)}>Delete</button>
+           <Button variant="contained" onClick={handleClickEdit} color="warning" classes={{root: 'btn-primary'}} startIcon={<ModeEditOutlineOutlinedIcon />}>Edit</Button>
+           <Button variant="contained" onClick={() => handleDelete(id)} size="small">Delete</Button>
+          {/* <button onClick={handleClickEdit}>Edit</button>
+          <button onClick={() => handleDelete(id)} >Delete</button> */}
         </>
       )}
     </div>

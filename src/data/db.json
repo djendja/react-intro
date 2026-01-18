@@ -1,8 +1,8 @@
 {
   "posts": [
     {
-      "title": "blbalall",
-      "views": 12,
+      "title": "title 6",
+      "views": 77,
       "id": "1"
     },
     {
@@ -35,5 +35,12 @@
   ],
   "profile": {
     "name": "typicode"
-  }
+  },
+  "users": [
+    {
+      "email": "admin@icrc.org",
+      "password": "admin123",
+      "id": "71bf"
+    }
+  ]
 }
