@@ -1,6 +1,6 @@
 import './App.css'
 import { Accordion } from './components/Accordion/Accordion'
-import { JokeComponent } from './components/JokeComponent/JokeComponent'
+import CardList from './components/CardList/CardList'
 
 function App() {
 
@@ -8,6 +8,7 @@ function App() {
     <>
       {/* <JokeComponent /> */}
       <Accordion />
+      <CardList />
     </>
   )
 }
