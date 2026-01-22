@@ -5,7 +5,7 @@ const get = async (url) => {
             headers: {
                 // //ako se desi da koristis api kod kojeg je CORS unknown, on nema eksplicitno podesenu server konfiguraciju u kojoj je ovaj vid headera definisan
                 //zakomentarisano zbog jokes api-ja koji nema podesen CORS, mozes da otkomentarises liniju pa da vidis da ce api za books da radi jer oni imaju definisan CORS
-                // "Content-Type": "application/json" 
+                "Content-Type": "application/json" 
             },
         });
 
@@ -27,9 +27,7 @@ const post = async (url, payload) => {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                // //ako se desi da koristis api kod kojeg je CORS unknown, on nema eksplicitno podesenu server konfiguraciju u kojoj je ovaj vid headera definisan
-                //zakomentarisano zbog jokes api-ja koji nema podesen CORS, mozes da otkomentarises liniju pa da vidis da ce api za books da radi jer oni imaju definisan CORS
-                // "Content-Type": "application/json" 
+                "Content-Type": "application/json" 
             },
             body: JSON.stringify(payload)
         });
@@ -52,9 +50,7 @@ const deleteRequest = async (url) => {
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
-                // //ako se desi da koristis api kod kojeg je CORS unknown, on nema eksplicitno podesenu server konfiguraciju u kojoj je ovaj vid headera definisan
-                //zakomentarisano zbog jokes api-ja koji nema podesen CORS, mozes da otkomentarises liniju pa da vidis da ce api za books da radi jer oni imaju definisan CORS
-                // "Content-Type": "application/json" 
+                "Content-Type": "application/json" 
             },
         });
 
@@ -76,9 +72,7 @@ const put = async (url, payload) => {
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
-                // //ako se desi da koristis api kod kojeg je CORS unknown, on nema eksplicitno podesenu server konfiguraciju u kojoj je ovaj vid headera definisan
-                //zakomentarisano zbog jokes api-ja koji nema podesen CORS, mozes da otkomentarises liniju pa da vidis da ce api za books da radi jer oni imaju definisan CORS
-                // "Content-Type": "application/json" 
+                "Content-Type": "application/json" 
             },
             body: JSON.stringify(payload)
         });
@@ -107,8 +101,18 @@ export const getJokes = async () => {
     return await get(' https://official-joke-api.appspot.com/random_joke');
 }
 
-export const getPosts = async () => {
-    return await get(`${url}/posts`);
+export const getPosts = async (query='') => {
+    let baseUrl = `${url}/posts`;
+
+    if(query.trim()) {
+        baseUrl += `?q=${encodeURIComponent(query.trim())}`
+    }
+
+    return await get(baseUrl);
+}
+
+export const getPost = async (id) => {
+    return await get(`${url}/posts/${id}`);
 }
 
 export const postPosts = async (payload) => {

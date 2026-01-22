@@ -1,88 +1,91 @@
 import { useEffect, useRef, useState } from "react";
-import { deletePost, putPost } from "../../../api/Api";
-import Button from '@mui/material/Button';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import './card.scss';
+import { deletePost } from "../../../api/Api";
+import Button from "@mui/material/Button";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import "./card.scss";
+import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 
-export const Card = ({ title, views, id, setPosts, posts }) => {
-  // const [editedTitle, setEditedTitle] = useState(title);
-  // const [editedViews, setEditedViews] = useState(views);
+const Card = () => {
   const [edit, setEdit] = useState(false);
   const editedTitleRef = useRef(null);
+  const navigate = useNavigate();
 
-  const handleDelete = async (id) => {
+  const data = useLoaderData();
+  // const postID = useParams();
+  // console.log(postID.id);
+
+  const actionData = useActionData();
+  const { title, views, id } = data;
+
+  const handleDelete = async () => {
     try {
-      const data = await deletePost(id);
-      const newPosts = posts.filter((post) => post.id !== data.id);
-      setPosts(newPosts);
+      await deletePost(id);
+      navigate(-1);
     } catch (error) {
       console.log("error", error);
       throw error;
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.currentTarget);
-    const editedTitle = formData.get('title');
-    const editedViews = formData.get('views');
-    
-    const payload = {title: editedTitle, views: Number(editedViews)};
-
-    try {
-        const data = await putPost(id, payload);
-        const updatedPosts = posts.map((post) => post.id === id ? data : post);
-        setPosts(updatedPosts);
-        setEdit(false);
-    }
-    catch(error) {
-        console.log('error', error);
-        throw error;
-    }
-  };
+  if (actionData?.success && edit) {
+    setEdit(false);
+  }
 
   useEffect(() => {
-    if(edit) {
-        console.log(editedTitleRef.current);
-        
-        editedTitleRef.current.focus();
+    if (edit) {
+      console.log(editedTitleRef.current);
+
+      editedTitleRef.current.focus();
     }
-  }, [edit])
+  }, [edit]);
 
   const handleClickEdit = () => {
     setEdit(true);
-    // console.log(editedTitleRef);
-    // editedTitleRef?.current.focus();
-  }
+  };
 
   return (
-    <div>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
       {edit ? (
-        <form onSubmit={handleSubmit}>
+        <Form method="PUT" action={`/posts/${id}`}>
           <input
             type="text"
             name="title"
             defaultValue={title}
             ref={editedTitleRef}
           />
-          <input
-            type="number"
-            name="views"
-            defaultValue={views}
-          />
+          <input type="number" name="views" defaultValue={views} />
           <button type="submit">Apply</button>
-        </form>
+        </Form>
       ) : (
         <>
           <h2>{title}</h2>
+          {actionData?.error && (
+            <p style={{ color: "red", margin: "8px 0" }}>{actionData.error}</p>
+          )}
           <p>Views: {views}</p>
-           <Button variant="contained" onClick={handleClickEdit} color="warning" classes={{root: 'btn-primary'}} startIcon={<ModeEditOutlineOutlinedIcon />}>Edit</Button>
-           <Button variant="contained" onClick={() => handleDelete(id)} size="small">Delete</Button>
-          {/* <button onClick={handleClickEdit}>Edit</button>
-          <button onClick={() => handleDelete(id)} >Delete</button> */}
+          {actionData?.success && (
+            <p style={{ color: "green", marginTop: "1rem" }}>
+              Post updated successfully!
+            </p>
+          )}
+          <Button
+            variant="contained"
+            onClick={handleClickEdit}
+            color="warning"
+            classes={{ root: "btn-primary" }}
+            startIcon={<ModeEditOutlineOutlinedIcon />}
+          >
+            Edit
+          </Button>
+          <Button variant="contained" onClick={handleDelete}>
+            Delete
+          </Button>
         </>
       )}
     </div>
   );
 };
+
+export default Card;

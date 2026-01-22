@@ -1,38 +1,37 @@
 {
   "posts": [
     {
-      "title": "title 6",
-      "views": 77,
-      "id": "1"
+      "title": "another title24",
+      "views": 200,
+      "id": "2"
     },
     {
-      "id": "2",
-      "title": "another title",
-      "views": 200
-    },
-    {
-      "id": "3001",
-      "title": "new title",
-      "views": 20
+      "title": "new title4",
+      "views": 20,
+      "id": "3001"
     },
     {
       "id": "adf5",
       "title": "gdsfasa",
       "views": 3
-    }
-  ],
-  "comments": [
-    {
-      "id": "1",
-      "text": "a comment about post 1",
-      "postId": "1"
     },
     {
-      "id": "2",
-      "text": "another comment about post 1",
-      "postId": "1"
+      "title": "hello",
+      "views": 21,
+      "id": "1GOrGDh"
+    },
+    {
+      "title": "blabla",
+      "views": 3,
+      "id": "cAJbJIR"
+    },
+    {
+      "title": "tree",
+      "views": 9,
+      "id": "G1Arlko"
     }
   ],
+  "comments": [],
   "profile": {
     "name": "typicode"
   },
