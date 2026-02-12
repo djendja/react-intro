@@ -1,15 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 
 function UserDashboard() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers]: any = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // ── novo ──
   const [searchTerm, setSearchTerm] = useState(""); // za pretragu
   const [sortConfig, setSortConfig] = useState({
     // za sortiranje
-    key: null, // 'firstName', 'age', 'email'...
+    key: '', // 'firstName', 'age', 'email'...
     direction: "asc", // 'asc' ili 'desc'
   });
 
@@ -65,7 +65,7 @@ function UserDashboard() {
   }, [users, searchTerm, sortConfig]);
   // ──────────
 
-  const handleSort = (key) => {
+  const handleSort = (key: string) => {
     setSortConfig((prev) => {
       // ako kliknemo na isti stubac → menjamo smer
       if (prev.key === key) {
@@ -79,7 +79,7 @@ function UserDashboard() {
     });
   };
 
-  const getSortIcon = (key) => {
+  const getSortIcon = (key: string) => {
     if (sortConfig.key !== key) return null;
     return sortConfig.direction === "asc" ? " ↑" : " ↓";
   };

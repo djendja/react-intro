@@ -1,11 +1,12 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, type LoaderFunctionArgs } from "react-router";
 import { MainLayout } from "../pages/MainLayout/MainLayout";
 import { HomePage } from "../pages/HomePage/HomePage";
 import { LoginForm } from "../components/LoginForm/LoginForm";
 import { getPost, getPosts, postPosts, putPost } from "../api/Api";
 import { lazy, Suspense } from "react";
+import type { PostProps } from "../api/Api.models";
 
-const postsLoader = async ({ request }) => {
+const postsLoader = async ({ request }: LoaderFunctionArgs): Promise<PostProps[]> => {
   const url = new URL(request.url);
   const query = url.searchParams.get("q") || "";
 
@@ -14,24 +15,24 @@ const postsLoader = async ({ request }) => {
     return posts;
   } catch (error) {
     console.log("error", error);
-    throw new Error(error);
+    throw new Error(error instanceof Error ? error.message : String(error));
   }
 };
 
-const postDetailLoader = async ({ params }) => {
+const postDetailLoader = async ({ params }: LoaderFunctionArgs): Promise<PostProps> => {
   try {
     const post = await getPost(params.id);
     return post;
   } catch (error) {
     console.log("error", error);
-    throw new Error(error);
+    throw new Error(error instanceof Error ? error.message : String(error));
   }
 };
 
-const createPostAction = async ({ request }) => {
+const createPostAction = async ({ request }: LoaderFunctionArgs) => {
   const formData = await request.formData();
 
-  const title = formData.get("title").toString().trim();
+  const title = formData.get("title")?.toString().trim();
   const views = Number(formData.get("views")) || 0;
 
   try {
@@ -42,7 +43,7 @@ const createPostAction = async ({ request }) => {
   }
 };
 
-const updatePostAction = async ({ params, request }) => {
+const updatePostAction = async ({ params, request }: LoaderFunctionArgs) => {
   const formData = await request.formData();
 
   const title = formData.get("title");

@@ -1,8 +1,17 @@
 import { createContext, useContext } from "react";
+import type { UserProps } from "../api/Api.models";
+
+export enum LanguageKey {
+    English = 'en',
+    german = 'de',
+    french = 'fr'
+}
 
 const defaultAppContext = {
-    lang: 'en',
-    setLang: () => {}
+    lang: LanguageKey.English,
+    setLang: (lang: LanguageKey) => {},
+    setUser: (user: UserProps) => {},
+    user: {email: '', password: ''} as UserProps | null
 }
 
 export const AppContext = createContext(defaultAppContext);
