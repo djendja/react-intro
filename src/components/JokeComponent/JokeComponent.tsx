@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getJokes } from "../../api/Api";
+import type { JokeProps } from "../../api/Api.models";
 
 export const JokeComponent = () => {
-  const [joke, setJoke] = useState("");
-  const [error, setError] = useState(null);
+  const [joke, setJoke] = useState<JokeProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

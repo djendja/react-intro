@@ -7,7 +7,7 @@ import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 
 const Card = () => {
   const [edit, setEdit] = useState(false);
-  const editedTitleRef = useRef(null);
+  const editedTitleRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
 
   const data = useLoaderData();
@@ -35,7 +35,7 @@ const Card = () => {
     if (edit) {
       console.log(editedTitleRef.current);
 
-      editedTitleRef.current.focus();
+      editedTitleRef.current?.focus();
     }
   }, [edit]);
 

@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { loginUser } from "../../api/Api";
 import { useAppContext } from "../../hooks/useAppContext";
+import { useNavigate } from "react-router";
+import type { UserProps } from "../../api/Api.models";
 
 
 const schema = z.object({
@@ -15,13 +17,14 @@ export const LoginForm = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const {setUser} = useAppContext();
+    const navigate = useNavigate();
 
     const {register, handleSubmit, formState: {errors}} = useForm({
         resolver: zodResolver(schema)
     });
 
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: UserProps) => {
         console.log(data);
         setLoading(true);
         setError('');
@@ -32,6 +35,7 @@ export const LoginForm = () => {
             if(user) {
                 setUser(user);
                 setLoading(false);
+                navigate('/');
             }
             else {
                 setError('invalid email or password')
