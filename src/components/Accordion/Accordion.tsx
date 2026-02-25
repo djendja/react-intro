@@ -3,6 +3,7 @@ import { AccordionItem } from "./AccordionItem/AccordionItem";
 import { getBooks } from "../../api/Api";
 import { useAppContext } from "../../hooks/useAppContext";
 import type { BookProps } from "../../api/Api.models";
+import { getBooksAxios } from "../../api/ApiAxios";
 
 export const Accordion = () => {
     const [accordions, setAccordions] = useState<BookProps[]>([]);
@@ -41,7 +42,7 @@ export const Accordion = () => {
 
         const loadAccordions = async () => {
             try {
-                const data = await getBooks(controller.signal);
+                const data = await getBooksAxios(controller.signal);
                 setAccordions(data);
             }
             catch(error) {
