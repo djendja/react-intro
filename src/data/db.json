@@ -1,8 +1,8 @@
 {
   "posts": [
     {
-      "title": "another title24",
-      "views": 200,
+      "title": "another title245",
+      "views": 222,
       "id": "2"
     },
     {
@@ -29,6 +29,21 @@
       "title": "tree",
       "views": 9,
       "id": "G1Arlko"
+    },
+    {
+      "title": "new post",
+      "views": 11,
+      "id": "V_hZu9R"
+    },
+    {
+      "title": "new post 2",
+      "views": 19,
+      "id": "wRgAFDO"
+    },
+    {
+      "title": "new post 3",
+      "views": 255,
+      "id": "AfHTt2G"
     }
   ],
   "comments": [],

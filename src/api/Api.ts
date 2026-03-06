@@ -122,7 +122,7 @@ export const postPosts = async (payload?: any): Promise<PostProps> => {
     return await post(`${url}/posts`, payload)
 }
 
-export const deletePost = async (id: string): Promise<PostProps> => {
+export const deletePost = async (id?: string): Promise<PostProps> => {
     return await deleteRequest(`${url}/posts/${id}`)
 }
 
