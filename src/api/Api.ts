@@ -1,4 +1,4 @@
-import type { BookProps, JokeProps, PostProps, UserProps } from "./Api.models";
+import type { BookProps, JokeProps, PaginatedResponse, PostFilters, PostProps, UserProps } from "./Api.models";
 
 const get = async <T>(url: string, signal?: AbortSignal): Promise<T> => {
     try {
@@ -104,14 +104,56 @@ export const getJokes = async (): Promise<JokeProps> => {
     return await get(' https://official-joke-api.appspot.com/random_joke');
 }
 
-export const getPosts = async (query=''): Promise<PostProps[]> => {
-    let baseUrl = `${url}/posts`;
+export const getPosts = async (filters: PostFilters): Promise<PaginatedResponse<PostProps>> => {
+    // let baseUrl = `${url}/posts`;
 
-    if(query.trim()) {
-        baseUrl += `?q=${encodeURIComponent(query.trim())}`
+    // if(query.trim()) {
+    //     baseUrl += `?q=${encodeURIComponent(query.trim())}`
+    // }
+
+    // return await get(baseUrl);
+
+    const params = new URLSearchParams();
+
+    if(filters?.q?.trim()) {
+        params.set("q", filters.q.trim())
     }
 
-    return await get(baseUrl);
+    if(filters?.views_gte !== undefined) {
+        params.set("views_gte", String(filters?.views_gte))
+    }
+
+    if(filters?.views_lte !== undefined) {
+        params.set("views_lte", String(filters?.views_lte))
+    }
+
+    if(filters?._sort) {
+        params.set("_sort", filters?._sort)
+    }
+
+    if(filters?._order) {
+        params.set("_order", filters?._order)
+    }
+
+    params.set("_page", String(filters?._page ?? 1))
+    params.set("_limit", String(filters?._limit ?? 3))
+
+    const query = params.toString();
+
+    // return await get(`${url}/posts${query ? `?${query}` : ''}`)
+
+    const response = await fetch(`${url}/posts?${query}`);
+
+    const data = await response.json();
+
+    const totalCount = Number(response.headers.get("X-Total-Count") ?? 0);
+    const limit = filters?._limit ?? 3;
+
+    return {
+        data,
+        pages: Math.ceil(totalCount / limit),
+        items: totalCount
+    }
 }
 
 export const getPost = async (id?: string): Promise<PostProps> => {
