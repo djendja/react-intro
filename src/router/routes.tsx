@@ -5,6 +5,7 @@ import { LoginForm } from "../components/LoginForm/LoginForm";
 import { getPost, getPosts, postPosts, putPost } from "../api/Api";
 import { lazy, Suspense } from "react";
 import type { PostProps } from "../api/Api.models";
+import { ShoppingCart } from "../components/ShoppingCart/ShoppingCart";
 
 const postsLoader = async ({ request }: LoaderFunctionArgs): Promise<PostProps[]> => {
   const url = new URL(request.url);
@@ -86,6 +87,10 @@ export const router = createBrowserRouter([
         loader: postDetailLoader,
         action: updatePostAction,
       },
+      {
+        path: "/cart",
+        element: <ShoppingCart />
+      }
     ],
   },
   {
