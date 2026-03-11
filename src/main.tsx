@@ -20,7 +20,7 @@ createRoot((document.getElementById('root') as HTMLElement)).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AppProvider>
-        <RouterProvider router={tanstackRouter}/>
+        <RouterProvider router={router}/>
       </AppProvider>
     </QueryClientProvider>
   </StrictMode>,
