@@ -4,7 +4,6 @@ import { HomePage } from "../pages/HomePage/HomePage";
 import { LoginForm } from "../components/LoginForm/LoginForm";
 import { getPost, getPosts, postPosts, putPost } from "../api/Api";
 import { lazy, Suspense } from "react";
-import type { PostProps } from "../api/Api.models";
 import { ShoppingCart } from "../components/ShoppingCart/ShoppingCart";
 import type { PaginatedResponse, PostFilters, PostProps } from "../api/Api.models";
 
