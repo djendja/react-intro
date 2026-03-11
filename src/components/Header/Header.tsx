@@ -6,10 +6,12 @@ import { NavLink } from "react-router";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useAppSelector } from "../../state/store";
 import { selectCartCount, selectCartTotal } from "../ShoppingCart/ShoppingCartSlice";
+import { useAuth } from "../../providers/AuthContext";
 
 export const Header = () => {
     const cartCount = useAppSelector(selectCartCount);
     const cartTotal = useAppSelector(selectCartTotal);
+    const { logout } = useAuth();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{backgroundColor: '#1a2e3f'}}>
@@ -25,7 +27,7 @@ export const Header = () => {
               ${cartTotal.toFixed(2)}
             </div>}
             </NavLink>
-            <NavLink to='/login' style={{color: 'white', textDecoration: 'none'}}>Login</NavLink>
+            <NavLink to='/login' style={{color: 'white', textDecoration: 'none'}} onClick={() => logout()}>Logout</NavLink>
         </Toolbar>
       </AppBar>
     </Box>

@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { loginUser } from "../../api/Api";
 import { useAppContext } from "../../hooks/useAppContext";
 import { useNavigate } from "react-router";
 import type { UserProps } from "../../api/Api.models";
+import { useAuth } from "../../providers/AuthContext";
 
 
 const schema = z.object({
@@ -14,41 +15,22 @@ const schema = z.object({
 }).required();
 
 export const LoginForm = () => {
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const {setUser} = useAppContext();
+    const { user, login, isLoading, error } = useAuth();
     const navigate = useNavigate();
 
     const {register, handleSubmit, formState: {errors}} = useForm({
         resolver: zodResolver(schema)
     });
 
+    useEffect(() => {
+        if(user) {
+            navigate('/')
+        }
+    }, [user, navigate])
 
-    const onSubmit = async (data: UserProps) => {
-        console.log(data);
-        setLoading(true);
-        setError('');
 
-        try {
-            const users = await loginUser();
-            const user = users.find((user) => user.email === data.email && user.password === data.password);
-            if(user) {
-                setUser(user);
-                setLoading(false);
-                navigate('/');
-            }
-            else {
-                setError('invalid email or password')
-            }
-        }
-        catch(error) {
-            console.log("error", error);
-            setError('Error')
-        }
-        finally {
-            setLoading(false);
-        }
-        
+    const onSubmit = async (data: {email: string, password: string}) => {
+        await login(data.email, data.password)
     }
 
 
@@ -58,6 +40,6 @@ export const LoginForm = () => {
         <input type="password" {...register('password')}/>
         {errors.password && <p>{errors.password.message}</p>}
         {error && <p>{error}</p>}
-        <button type="submit">{loading ? 'Logging in...' : 'Login'}</button>
+        <button type="submit">{isLoading ? 'Logging in...' : 'Login'}</button>
     </form>
 }

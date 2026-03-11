@@ -42,3 +42,14 @@ export interface PaginatedResponse<T> {
     pages?: number,
     items?: number
 }
+
+export interface User {
+    id: number;
+    email: string;
+    name: string;
+}
+
+export interface LoginResponse {
+    accessToken: string;
+    user: User;
+}

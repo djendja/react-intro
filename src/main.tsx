@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter } from './router/routesTanstack.js'
 import { Provider } from 'react-redux'
 import { store } from './state/store.js'
+import { AuthProvider } from './providers/AuthContext.js'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,12 +21,14 @@ const tanstackRouter = createRouter(queryClient);
 
 createRoot((document.getElementById('root') as HTMLElement)).render(
   <StrictMode>
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <AppProvider>
-          <RouterProvider router={tanstackRouter}/>
-        </AppProvider>
-      </QueryClientProvider>
-    </Provider>
+    <AuthProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <AppProvider>
+            <RouterProvider router={router}/>
+          </AppProvider>
+        </QueryClientProvider>
+      </Provider>
+    </AuthProvider>
   </StrictMode>,
 )

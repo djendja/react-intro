@@ -55,6 +55,12 @@
       "email": "admin@icrc.org",
       "password": "admin123",
       "id": "71bf"
+    },
+    {
+      "email": "alice@example.com",
+      "password": "$2a$10$1JmdBEywwQtN4HgbUC.AqOGIAcHi6vDGs43IzRQ5sZudumt5M.wYy",
+      "name": "Alice Chen",
+      "id": "AgU71p0"
     }
   ]
 }

@@ -1,19 +1,32 @@
-import type { BookProps, JokeProps, PaginatedResponse, PostFilters, PostProps, UserProps } from "./Api.models";
+import { decodeToken } from "../utils/jwt";
+import type { BookProps, JokeProps, LoginResponse, PaginatedResponse, PostFilters, PostProps, User, UserProps } from "./Api.models";
 
-const get = async <T>(url: string, signal?: AbortSignal): Promise<T> => {
+function getToken(): string | null {
+    return localStorage.getItem("auth_token");
+}
+
+const get = async <T>(url: string, signal?: AbortSignal, token?: string): Promise<T> => {
+    const accessTokenLS = getToken();
+    const authToken = accessTokenLS || token || undefined;
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 // //ako se desi da koristis api kod kojeg je CORS unknown, on nema eksplicitno podesenu server konfiguraciju u kojoj je ovaj vid headera definisan
                 //zakomentarisano zbog jokes api-ja koji nema podesen CORS, mozes da otkomentarises liniju pa da vidis da ce api za books da radi jer oni imaju definisan CORS
-                "Content-Type": "application/json" 
+                "Content-Type": "application/json",
+                "Authorization": authToken ? `Bearer ${authToken}` : ""
             },
             signal
         });
 
         if(!response.ok) {
             throw new Error(`Server responded with status ${response.status}`)
+        }
+
+        if(response.status === 401) {
+            localStorage.removeItem("auth_token");
+            window.location.href = "/login"
         }
 
         const data = (await response.json()) as T;
@@ -174,4 +187,13 @@ export const putPost = async (id?: string, payload?: any): Promise<PostProps> =>
 
 export const loginUser = async (): Promise<UserProps[]> => {
     return await get(`${url}/users`);
+}
+
+export const loginAPI = async (email: string, password: string): Promise<LoginResponse> => {
+    return await post<LoginResponse>(`${url}/login`, {email, password})
+}
+
+export const fetchProfile = async (token: string): Promise<User> => {
+    const payload = decodeToken(token);
+    return await get<User>(`${url}/users/${payload.sub}`)
 }
