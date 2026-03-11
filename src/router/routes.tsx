@@ -6,13 +6,25 @@ import { getPost, getPosts, postPosts, putPost } from "../api/Api";
 import { lazy, Suspense } from "react";
 import type { PostProps } from "../api/Api.models";
 import { ShoppingCart } from "../components/ShoppingCart/ShoppingCart";
+import type { PaginatedResponse, PostFilters, PostProps } from "../api/Api.models";
 
-const postsLoader = async ({ request }: LoaderFunctionArgs): Promise<PostProps[]> => {
+const postsLoader = async ({ request }: LoaderFunctionArgs): Promise<PaginatedResponse<PostProps>> => {
   const url = new URL(request.url);
-  const query = url.searchParams.get("q") || "";
+  // const query = url.searchParams.get("q") || "";
+  const searchParams = url.searchParams;
+
+  const filters: PostFilters = {
+    q: searchParams.get("q") ?? undefined,
+    views_gte: searchParams.get("views_gte") ? Number(searchParams.get("views_gte")) : undefined,
+    views_lte: searchParams.get("views_lte") ? Number(searchParams.get("views_lte")) : undefined,
+    _sort: searchParams.get("_sort") ?? undefined,
+    _order: (searchParams.get("_order") as 'asc' | 'desc') ?? undefined,
+    _page: searchParams.get("_page") ? Number(searchParams.get("_page")) : 1,
+    _limit: 3
+  }
 
   try {
-    const posts = await getPosts(query);
+    const posts = await getPosts(filters);
     return posts;
   } catch (error) {
     console.log("error", error);

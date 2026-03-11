@@ -7,12 +7,14 @@ import {
   useLoaderData,
   useSearchParams,
 } from "react-router";
-import { CardContent, TextField, Typography } from "@mui/material";
+import { CardContent, Pagination, TextField, Typography } from "@mui/material";
 import { Card as MUICard } from "@mui/material";
-import type { PostProps } from "../../api/Api.models";
+import type { PaginatedResponse, PostProps } from "../../api/Api.models";
+import { SortControl } from "../SortControl/SortControl";
+import BasicPagination from "../Pagination/Pagination";
 
 function CardList() {
-  const posts: PostProps[] = useLoaderData();
+  const {data: posts, pages} = useLoaderData() as PaginatedResponse<PostProps>;
   const actionData = useActionData();
   const [, setSearchParams] = useSearchParams();
   const [title, setTitle] = useState("");
@@ -29,16 +31,28 @@ function CardList() {
     }
   }, [actionData]);
 
-  const handleSearch = (query: string) => {
+  // const handleSearch = (query: string) => {
+  //   setSearchParams((prev) => {
+  //     if (query.trim()) {
+  //       prev.set("q", query.trim());
+  //     } else {
+  //       prev.delete("q");
+  //     }
+  //     return prev;
+  //   });
+  // };
+
+  const updateFilter = (key: string, value: string) => {
     setSearchParams((prev) => {
-      if (query.trim()) {
-        prev.set("q", query.trim());
-      } else {
-        prev.delete("q");
+      if(value.trim()) {
+        prev.set(key, value)
+      }
+      else {
+        prev.delete(key)
       }
       return prev;
-    });
-  };
+    })
+  }
 
   return (
     <div
@@ -46,10 +60,26 @@ function CardList() {
     >
       <TextField
         type="text"
+        label="Search by title"
         name="q"
         sx={{ marginTop: "20px" }}
-        onChange={(e) => handleSearch(e.currentTarget.value)}
+        onChange={(e) => updateFilter('q', e.currentTarget.value)}
       />
+      <TextField
+        type="text"
+        label="Min views"
+        name="views_gte"
+        sx={{ marginTop: "20px" }}
+        onChange={(e) => updateFilter('views_gte', e.currentTarget.value)}
+      />
+      <TextField
+        type="text"
+        label="Max views"
+        name="views_lte"
+        sx={{ marginTop: "20px" }}
+        onChange={(e) => updateFilter('views_lte', e.currentTarget.value)}
+      />
+      <SortControl />
       {posts?.map((post) => {
         return (
           <NavLink
@@ -61,6 +91,7 @@ function CardList() {
           </NavLink>
         );
       })}
+      <BasicPagination count={pages}/>
       <Form method="post" action="/posts">
         <input
           type="text"
