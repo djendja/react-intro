@@ -8,18 +8,22 @@ import type { PostProps } from "../api/Api.models";
 import { postPostsAxios } from "../api/ApiAxios";
 import { QueryClient } from "@tanstack/react-query";
 import { postDetailQuery, postsQuery } from "../queries/postQueries";
+import { ShoppingCart } from "../components/ShoppingCart/ShoppingCart";
 
-const postsLoader = (queryClient: QueryClient) => async ({ request }: LoaderFunctionArgs): Promise<PostProps[]> => {
-  const url = new URL(request.url);
-  const query = url.searchParams.get("q") || "";
+const postsLoader =
+  (queryClient: QueryClient) =>
+  async ({ request }: LoaderFunctionArgs): Promise<PostProps[]> => {
+    const url = new URL(request.url);
+    const query = url.searchParams.get("q") || "";
 
-  return queryClient.ensureQueryData(postsQuery(query));
+    return queryClient.ensureQueryData(postsQuery(query));
+  };
 
-};
-
-const postDetailLoader = (QueryClient: QueryClient) => async ({ params }: LoaderFunctionArgs): Promise<PostProps> => {
-  return QueryClient.ensureQueryData(postDetailQuery(params.id))
-};
+const postDetailLoader =
+  (QueryClient: QueryClient) =>
+  async ({ params }: LoaderFunctionArgs): Promise<PostProps> => {
+    return QueryClient.ensureQueryData(postDetailQuery(params.id));
+  };
 
 const createPostAction = async ({ request }: LoaderFunctionArgs) => {
   const formData = await request.formData();
@@ -52,36 +56,41 @@ const updatePostAction = async ({ params, request }: LoaderFunctionArgs) => {
 const Card = lazy(() => import("../components/CardList/Card/CardTanstack"));
 const CardList = lazy(() => import("../components/CardList/CardListTanstack"));
 
-export const createRouter = (queryClient: QueryClient) => createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      { index: true, element: <HomePage /> },
-      {
-        path: "posts",
-        element: (
-          <Suspense fallback={<div>Loading all posts...</div>}>
-            <CardList />
-          </Suspense>
-        ),
-        loader: postsLoader(queryClient),
-        // action: createPostAction,
-      },
-      {
-        path: "posts/:id",
-        element: (
-          <Suspense fallback={<div>Loading post details...</div>}>
-            <Card />
-          </Suspense>
-        ),
-        loader: postDetailLoader(queryClient),
-        action: updatePostAction,
-      },
-    ],
-  },
-  {
-    path: "/login",
-    element: <LoginForm />,
-  },
-]);
+export const createRouter = (queryClient: QueryClient) =>
+  createBrowserRouter([
+    {
+      path: "/",
+      element: <MainLayout />,
+      children: [
+        { index: true, element: <HomePage /> },
+        {
+          path: "posts",
+          element: (
+            <Suspense fallback={<div>Loading all posts...</div>}>
+              <CardList />
+            </Suspense>
+          ),
+          loader: postsLoader(queryClient),
+          // action: createPostAction,
+        },
+        {
+          path: "posts/:id",
+          element: (
+            <Suspense fallback={<div>Loading post details...</div>}>
+              <Card />
+            </Suspense>
+          ),
+          loader: postDetailLoader(queryClient),
+          action: updatePostAction,
+        },
+        {
+          path: "/cart",
+          element: <ShoppingCart />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <LoginForm />,
+    },
+  ]);

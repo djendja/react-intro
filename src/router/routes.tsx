@@ -4,6 +4,8 @@ import { HomePage } from "../pages/HomePage/HomePage";
 import { LoginForm } from "../components/LoginForm/LoginForm";
 import { getPost, getPosts, postPosts, putPost } from "../api/Api";
 import { lazy, Suspense } from "react";
+import type { PostProps } from "../api/Api.models";
+import { ShoppingCart } from "../components/ShoppingCart/ShoppingCart";
 import type { PaginatedResponse, PostFilters, PostProps } from "../api/Api.models";
 
 const postsLoader = async ({ request }: LoaderFunctionArgs): Promise<PaginatedResponse<PostProps>> => {
@@ -97,6 +99,10 @@ export const router = createBrowserRouter([
         loader: postDetailLoader,
         action: updatePostAction,
       },
+      {
+        path: "/cart",
+        element: <ShoppingCart />
+      }
     ],
   },
   {
